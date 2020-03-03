@@ -3,9 +3,9 @@ import 'block.dart';
 
 /** Compute the board for a rectangular board */
 BigInt buildRectangularGameBoard() {
-  var board = BigInt.from(1 << BOARD_W - 1);
-  var row = 1 << (BOARD_W - 1);
-  for (int h = 0; h < BOARD_H; ++h) {
+  var board = BigInt.from((1 << BOARD_W) - 1);
+  final row = 1 << (BOARD_W - 1);
+  for (int h = 0; h < BOARD_H - 1; ++h) {
     board = (board << BOARD_W) | BigInt.from(row);
   }
   return board;
