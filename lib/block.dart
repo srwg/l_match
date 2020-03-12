@@ -4,7 +4,7 @@ class Block {
   final c_index;
   bool is_fixed;
   bool is_placed;
-  int pos;
+  int position;
 
   final _BlockGroup _group;
   int _g_index;
@@ -16,34 +16,37 @@ class Block {
     _block = _group.get(_g_index);
     this.is_fixed = is_fixed;
     this.is_placed = is_placed;
-    this.pos = pos;
+    this.position = pos;
   }
 
   bool isSelected(int pos) {
-    if (is_fixed || !is_placed || this.pos > pos) return false;
-    return _block.mask >> (pos - this.pos) & BigInt.one != BigInt.zero;
+    if (is_fixed || !is_placed || position > pos) return false;
+    return _block.mask >> (pos - position) & BigInt.one != BigInt.zero;
+  }
+
+  BigInt shift(BigInt mask, int pos) {
+    return pos >= 0 ? mask << pos : mask >> -pos;
   }
 
   BigInt getMask() {
-    return is_placed ? _block.mask << pos: _block.native_mask;
+    return is_placed ? shift(_block.mask, position) : _block.native_mask;
   }
 
   BigInt getHole() {
-    return is_placed ? _block.hole << pos: _block.native_hole;
+    return is_placed ? shift(_block.hole, position) : _block.native_hole;
   }
 
   BigInt place(int pos, List<BigInt> boards) {
     pos -= 2 * BOARD_W + 2;
-    if (pos < 0) pos = 0;
-    if (is_placed || _block.mask << pos & boards[0] != BigInt.zero) {
+    if (is_placed || shift(_block.mask, pos) & boards[0] != BigInt.zero) {
       return boards[0];
     }
-    if (_block.hole << pos & boards[c_index] == BigInt.zero) {
+    if (shift(_block.hole, pos) & boards[c_index] == BigInt.zero) {
       return boards[0];
     }
-    this.pos = pos;
+    this.position = pos;
     is_placed = true;
-    return boards[0] | (_block.mask << pos);
+    return boards[0] | shift(_block.mask, pos);
   }
 
   BigInt replace(List<BigInt> boards) {
@@ -51,7 +54,7 @@ class Block {
       return boards[0];
     }
     is_placed = false;
-    return boards[0] - (_block.mask << this.pos);
+    return boards[0] - shift(_block.mask, position);
   }
 
   BigInt rotate(List<BigInt> boards) {

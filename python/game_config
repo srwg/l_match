@@ -1,56 +1,3 @@
-import 'dart:math';
-
-import 'constants.dart';
-import 'block.dart';
-
-/** Compute the board for a rectangular board */
-BigInt buildRectangularGameBoard() {
-  var board = BigInt.from((1 << BOARD_W) - 1);
-  final row = 1 << (BOARD_W - 1);  // Bottom margin
-  for (int h = 0; h < BOARD_H - 2; ++h) {
-    board = (board << BOARD_W) | BigInt.from(row);
-  }
-  board = (board << BOARD_W) | BigInt.from((1 << BOARD_W) - 1);  // Top margin
-  return board;
-}
-
-BigInt buildGamePins(List pos) {
-  var board = BigInt.zero;
-  var rows = List<int>();
-  for (int r=0; r < BOARD_H; ++r) {
-    var x = 0;
-    for (var p in pos) {
-      if (p[0] == r) {
-        x += 1 << p[1];
-      }
-    }
-    rows.add(x);
-  }
-  for (int r in rows.reversed) {
-    board = (board << BOARD_W) | BigInt.from(r);
-  }
-  return board;
-}
-
-List<BigInt> buildGame(List<Block> blocks, List<Block> blocks_home) {
-  for (int i = 0; i < blocks.length; ++i) {
-    blocks_home.add(blocks[i]);
-  }
-  List<BigInt> boards = [];
-  boards.add(buildRectangularGameBoard());
-  
-  var config_id = new Random().nextInt(37);
-
-  for (var pins in GAME_PINS[config_id]) {
-    var pin_b = buildGamePins(pins);
-    boards[0] |= pin_b;
-    boards.add(pin_b);
-  }
-  return boards;
-}
-
-/** Game configuration */
-const GAME_PINS = [[[[1, 0], [5, 1], [2, 6], [6, 6]], [[5, 0], [6, 2], [2, 3], [3, 7]], [[2, 2], [4, 3], [5, 4], [2, 7]],],
 [[[1, 5], [5, 3], [3, 7], [5, 0], ], [[3, 1], [3, 4], [5, 5], [6, 3], ], [[2, 1], [2, 5], [2, 2], [4, 7], ]],
 [[[3, 2], [3, 0], [4, 7], [6, 7], ], [[3, 1], [3, 4], [6, 1], [5, 4], ], [[2, 4], [1, 5], [3, 3], [6, 3], ]],
 [[[3, 1], [1, 6], [6, 0], [6, 6], ], [[1, 4], [3, 2], [6, 2], [5, 4], ], [[1, 3], [2, 3], [4, 6], [4, 3], ]],
@@ -87,5 +34,3 @@ const GAME_PINS = [[[[1, 0], [5, 1], [2, 6], [6, 6]], [[5, 0], [6, 2], [2, 3], [
 [[[1, 3], [3, 3], [5, 4], [6, 5], ], [[1, 0], [3, 1], [2, 6], [6, 1], ], [[1, 5], [2, 3], [3, 5], [5, 2], ]],
 [[[3, 1], [1, 7], [3, 4], [6, 2], ], [[2, 3], [3, 2], [4, 7], [6, 5], ], [[1, 3], [2, 6], [6, 4], [6, 3], ]],
 [[[3, 1], [2, 6], [6, 4], [6, 7], ], [[2, 0], [3, 7], [4, 3], [6, 1], ], [[1, 3], [2, 4], [3, 5], [3, 0], ]],
-];
-

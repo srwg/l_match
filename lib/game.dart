@@ -11,7 +11,7 @@ const NATIVE_D = 25;
 const NATIVE_B = NATIVE_D * NATIVE_W + 10;
 
 // The Y positions for each section
-const Y0 = 30;
+const Y0 = -15;
 const Y1 = Y0 + CIRCLE_D * BOARD_H;
 const Y2 = Y1 + 10;
 
@@ -93,7 +93,7 @@ class GamePainter extends ChangeNotifier implements CustomPainter {
   void _paintInBoard(BigInt mask, BigInt hole, int c_index, Canvas canvas, Paint paint,
       {int target = 1, double padding = 0.02}) {
     paint.color = COLORS[c_index];
-    for (int y = 0; y < BOARD_H - 1; ++y) {
+    for (int y = 1; y < BOARD_H - 1; ++y) {
       for (int x = 0; x < BOARD_W - 1; ++x) {
         int pos = y * BOARD_W + x;
         if (mask >> pos & BigInt.one == BigInt.from(target)) {
