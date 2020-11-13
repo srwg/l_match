@@ -5,8 +5,8 @@ import 'block.dart';
 
 // The pixel diameter size of a circle
 const CIRCLE_D = 45;
-
 const NATIVE_D = 25;
+
 // The pixel size of a home block
 const NATIVE_B = NATIVE_D * NATIVE_W + 10;
 
